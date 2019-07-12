@@ -1,44 +1,55 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Problem
 
-In the project directory, you can run:
+We use Azure AD for our login. When we run our `testcafe` tests with `userRoles` the first test always fails due to login issues and it enters a loop. Subsequent tests pass and the login problem is not there.
 
-### `npm start`
+## How to run the application
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Register your application in [Azure AD](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+- The application requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled. To do that once you have registered your application under Authentication you need to Access tokens and ID tokens.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+[azure](https://github.com/zsid/testcafe-azure-ad/azureAd.png)
 
-### `npm test`
+- Once you have register
+- [Enable ID tokens and access tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-javascript)
+- Create `.env` file
+- Add your `React Variables` i.e.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+REACT_APP_TENANT=Azure-tenant-id
+REACT_APP_CLIENT_ID=Azure-client-id
+REACT_APP_REDIRECT_URI=http://localhost:3000/login
+```
 
-### `npm run build`
+- Update your `config.ts` in `testcafe` folder with the Azure login information. Either hardcode them or use `env` variables.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+baseUrl: process.env.BASE_URL || "http://localhost:3000",
+azureAdUsername: process.env.AZURE_AD_USERNAME // Your-login-email
+azureAdPassword: process.env.AZURE_AD_PASSWORD // Your-password
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+- Start the app `yarn start` (dont forget to `yarn` before that to install dependancies) and then in run seperately your `testcafe` tests - `yarn test:e2e:chrome`. You can see that the tests pass in safari `yarn test:e2e:safari`. The tests will also fail in `headless` mode.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- If you add debug in your tests when running them in `chrome` before navigating away, you can `unlock` the page and complete the flow - you will see that the loop will not longer be there. To simulate that add `debug` before the last `submit`
 
-### `npm run eject`
+```
+export async function loginAzureAD(t: any) {
+  await t
+    .typeText(
+      Selector("input").withAttribute("type", "email"),
+      config.azureAdUsername
+    )
+    .click(Selector("input").withAttribute("type", "submit"))
+    .typeText(
+      Selector("input").withAttribute("type", "password"),
+      config.azureAdPassword
+    )
+    .click(Selector("input").withAttribute("type", "submit"))
+    .debug() <--- Add debug here and press submit
+    .click(Selector("input").withAttribute("type", "submit"));
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- You can run the tests in `headless` mode and see the screenshot - > it is the same screen that you see when you run `e2e` tests in `chrome` and the first test fails.
