@@ -9,7 +9,7 @@ We use Azure AD for our login. When we run our `testcafe` tests with `userRoles`
 - Register your application in [Azure AD](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 - The application requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled. To do that once you have registered your application under Authentication you need to Access tokens and ID tokens.
 
-[azure](https://github.com/zsid/testcafe-azure-ad/azureAd.png)
+[azure](https://github.com/zsid/testcafe-azure-ad/blob/master/azureAd.png)
 
 - Once you have register
 - [Enable ID tokens and access tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-javascript)
