@@ -1,17 +1,11 @@
 import config from "../config";
 import HomePage from "../pages/HomePage";
-import { azureAdUser } from "../utils/roles";
 import { ClientFunction } from "testcafe";
 
 export const getLocation = ClientFunction(() => document.location.pathname);
-
-fixture("HomePage Navigation")
-  .page(`${config.baseUrl}`)
-  .beforeEach(async (t: any) => {
-    await t.useRole(azureAdUser);
-  });
-
 const homePage = new HomePage();
+
+fixture("HomePage Navigation").page(`${config.baseUrl}`);
 
 test("Navigation exists on the home page with two links", async t => {
   const { navigationLink } = homePage;

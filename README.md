@@ -6,49 +6,14 @@ We use Azure AD for our login. When we run our `testcafe` tests with `userRoles`
 
 ## How to run the application
 
-- Register your application in [Azure AD](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
-- Add redirect URI to be `http://localhost:3000/login` and have `Web` in the dropdown option.
-- The application requires the [Implicit grant flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-implicit-grant-flow) to be enabled. To do that once you have registered your application under Authentication you need to Access tokens and ID tokens.
+- `yarn`
+- `yarn start`
+- `yarn test:e2e:headless`
 
-![azure](https://github.com/zsid/testcafe-azure-ad/blob/master/azureAd.png)
-
-- Create `.env` file
-- Add your `React Variables` i.e.
+You would see an error in the command line:
 
 ```
-REACT_APP_TENANT=Azure-tenant-id
-REACT_APP_CLIENT_ID=Azure-client-id
-REACT_APP_REDIRECT_URI=http://localhost:3000/login // This is the redirect URI that you have specified in Azure. They need to match.
+testcafe-azure-ad/testcafe/fixture/navigation.test.ts (13, 11): Property 'expect' does not exist on type 'DoneCallback'.
+testcafe-azure-ad/testcafe/fixture/navigation.test.ts (20, 6): Property 'expect' does not exist on type 'DoneCallback'.
+testcafe-azure-ad/testcafe/fixture/navigation.test.ts (31, 6): Property 'click' does not exist on type 'DoneCallback'.
 ```
-
-- Update your `config.ts` in `testcafe` folder with the Azure login information. Either hardcode them or use `env` variables.
-
-```
-baseUrl: process.env.BASE_URL || "http://localhost:3000",
-azureAdUsername: process.env.AZURE_AD_USERNAME // Your-login-email
-azureAdPassword: process.env.AZURE_AD_PASSWORD // Your-password
-```
-
-- Start the app `yarn start` (dont forget to `yarn` before that to install dependancies) and then run seperately your `testcafe` tests - `yarn test:e2e:chrome`. You can see that the tests pass in safari `yarn test:e2e:safari`. The tests will also fail in `headless` mode `yarn test:e2e:headless`
-
-- If you add debug in your tests when running them in `chrome` before navigating away, you can `unlock` the page and complete the flow - you will see that the loop will not longer be there. To simulate that add `debug` before the last `submit`
-
-```
-export async function loginAzureAD(t: any) {
-  await t
-    .typeText(
-      Selector("input").withAttribute("type", "email"),
-      config.azureAdUsername
-    )
-    .click(Selector("input").withAttribute("type", "submit"))
-    .typeText(
-      Selector("input").withAttribute("type", "password"),
-      config.azureAdPassword
-    )
-    .click(Selector("input").withAttribute("type", "submit"))
-    .debug() <--- Add debug here and press submit
-    .click(Selector("input").withAttribute("type", "submit"));
-}
-```
-
-- You can run the tests in `headless` mode `yarn test:e2e:headless:screenshots` and see the screenshot - > it is the same screen that you see when you run `e2e` tests in `chrome` and the first test fails.
