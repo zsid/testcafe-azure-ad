@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import adal from "./config/adalConfig";
 
 const Header = () => (
   <header data-tc="header">
@@ -11,7 +10,6 @@ const Header = () => (
       <NavLink exact to={"/snacks"} data-tc="navigationLink">
         Snacks
       </NavLink>
-      <button onClick={() => adal.authContext.logOut()}>Log out</button>
     </nav>
   </header>
 );

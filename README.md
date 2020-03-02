@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Problem
 
-We use Azure AD for our login. When we run our `testcafe` tests with `userRoles` the first test always fails due to login issues and it enters a loop. Subsequent tests pass and the login problem is not there.
+We use Azure AD for our login. We are now changing our libraries from `react-adal` to `react-aad-msal`. Our application is not rendering in the test browser since migrating to `react-aad-msal`. You can see the applicaiton normally if you visit `localhost:3000`.
 
 ## How to run the application
 
@@ -12,8 +12,7 @@ We use Azure AD for our login. When we run our `testcafe` tests with `userRoles`
 
 ![azure](https://github.com/zsid/testcafe-azure-ad/blob/master/azureAd.png)
 
-- Create `.env` file
-- Add your `React Variables` i.e.
+- Update `.env` file with your `React variables`
 
 ```
 REACT_APP_TENANT=Azure-tenant-id
@@ -29,26 +28,9 @@ azureAdUsername: process.env.AZURE_AD_USERNAME // Your-login-email
 azureAdPassword: process.env.AZURE_AD_PASSWORD // Your-password
 ```
 
-- Start the app `yarn start` (dont forget to `yarn` before that to install dependancies) and then run seperately your `testcafe` tests - `yarn test:e2e:chrome`. You can see that the tests pass in safari `yarn test:e2e:safari`. The tests will also fail in `headless` mode `yarn test:e2e:headless`
+- Start the app `yarn start` (dont forget to `yarn` before that to install dependancies) and then run seperately your `testcafe` tests - `yarn test:e2e:chrome`. You can see that after logging in the application is not rendering.
 
-- If you add debug in your tests when running them in `chrome` before navigating away, you can `unlock` the page and complete the flow - you will see that the loop will not longer be there. To simulate that add `debug` before the last `submit`
+  - If you cannot login and the test fails in the login screen go into `testcafe/utils/roles.ts` and uncomment the last line `// .click(Selector("input").withAttribute("type", "submit"));` as this step sometimes appears and sometimes not.
+  - You can also stop the test from running, unlock the browser and login yourself. You will not be see the application rendering.
 
-```
-export async function loginAzureAD(t: any) {
-  await t
-    .typeText(
-      Selector("input").withAttribute("type", "email"),
-      config.azureAdUsername
-    )
-    .click(Selector("input").withAttribute("type", "submit"))
-    .typeText(
-      Selector("input").withAttribute("type", "password"),
-      config.azureAdPassword
-    )
-    .click(Selector("input").withAttribute("type", "submit"))
-    .debug() <--- Add debug here and press submit
-    .click(Selector("input").withAttribute("type", "submit"));
-}
-```
-
-- You can run the tests in `headless` mode `yarn test:e2e:headless:screenshots` and see the screenshot - > it is the same screen that you see when you run `e2e` tests in `chrome` and the first test fails.
+- If you want to run the app using `react-adal` library rather than `react-aad-msal`, then rename `indexAdal.tsx` to `index.tsx` and change the name of `index.tsx`. You can see that we can login normally in our tests and see the application

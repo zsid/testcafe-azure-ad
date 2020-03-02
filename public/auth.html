@@ -1,0 +1,13 @@
+<!-- Blank html helper file for authentication redirects.
+
+If using the popup authnetication method, point the redirectUrl to this file for a more performant authentication.
+Rather than the authentication popup loading the entire page in an iframe and downloading scripts/css twice,
+the MSAL library will use this blank HTML file as a valid route on the domain to st ore items in cache and deal
+with cookies.
+
+If not using the popup authentication method, this file can still be used for refresh token, where the file will be loaded in the refresh iframe
+rather than reloading your entire site.
+
+https://github.com/syncweek-react-aad/react-aad/issues/195
+
+-->

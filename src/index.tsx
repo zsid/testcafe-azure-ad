@@ -2,20 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import { runWithAdal } from "react-adal";
-import adal from "./config/adalConfig";
+import msal from "./config/msalConfig";
+import AzureAD from "react-aad-msal";
 
-const DO_NOT_LOGIN = false;
-
-runWithAdal(
-  adal.authContext,
-  () => {
-    ReactDOM.render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>,
-      document.getElementById("root")
-    );
-  },
-  DO_NOT_LOGIN
+ReactDOM.render(
+  <AzureAD provider={msal.authProvider} forceLogin>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+    ,
+  </AzureAD>,
+  document.getElementById("root")
 );
