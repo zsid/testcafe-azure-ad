@@ -12,8 +12,8 @@ export async function loginAzureAD(t: any) {
       Selector("input").withAttribute("type", "password"),
       config.azureAdPassword
     )
-    .click(Selector("input").withAttribute("type", "submit"))
     .click(Selector("input").withAttribute("type", "submit"));
+  // .click(Selector("input").withAttribute("type", "submit"));
 }
 
 export const azureAdUser = Role(`${config.baseUrl}`, loginAzureAD);
